@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<humanBeings>
+  <humanBeing id="1">
+    <name>Gerald</name>
+    <coordinates>
+      <x>34523</x>
+      <y>-1241.23</y>
+    </coordinates>
+    <creationDate>2025-05-01</creationDate>
+    <realHero>true</realHero>
+    <hasToothpick>false</hasToothpick>
+    <impactSpeed>71.1</impactSpeed>
+    <soundtrackName>The Witcher</soundtrackName>
+    <minutesOfWaiting>0.6</minutesOfWaiting>
+    <weaponType>KNIFE</weaponType>
+    <car>
+      <name></name>
+    </car>
+  </humanBeing>
+  <humanBeing id="2">
+    <name>Connor</name>
+    <coordinates>
+      <x>23</x>
+      <y>-2.5</y>
+    </coordinates>
+    <creationDate>2025-05-01</creationDate>
+    <realHero>true</realHero>
+    <hasToothpick>false</hasToothpick>
+    <impactSpeed>99.0</impactSpeed>
+    <soundtrackName>Your Choice - Connor</soundtrackName>
+    <minutesOfWaiting>10.0</minutesOfWaiting>
+    <weaponType>KNIFE</weaponType>
+    <car>
+      <name></name>
+    </car>
+  </humanBeing>
+  <humanBeing id="3">
+    <name>V</name>
+    <coordinates>
+      <x>-166</x>
+      <y>-461.0</y>
+    </coordinates>
+    <creationDate>2025-05-01</creationDate>
+    <realHero>true</realHero>
+    <hasToothpick>true</hasToothpick>
+    <impactSpeed>1.0</impactSpeed>
+    <soundtrackName>To the Fullset</soundtrackName>
+    <minutesOfWaiting>0.0</minutesOfWaiting>
+    <weaponType>KNIFE</weaponType>
+    <car>
+      <name>Rayfield Caliburn</name>
+    </car>
+  </humanBeing>
+</humanBeings>
