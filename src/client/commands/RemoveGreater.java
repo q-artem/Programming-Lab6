@@ -1,11 +1,11 @@
 package client.commands;
 
 import common.Command;
-import server.managers.CollectionManager;
+import client.managers.CollectionManager;
 import common.HumanBeing;
 import common.utility.Describable;
 import common.utility.Executable;
-import client.utility.ExecutionResponse;
+import common.utility.ExecutionResponse;
 import client.utility.console.Console;
 
 /**

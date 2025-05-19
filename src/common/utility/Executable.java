@@ -1,7 +1,5 @@
 package common.utility;
 
-import client.utility.ExecutionResponse;
-
 /**
  * Интерфейс для всех выполняемых команд.
  * Определяет метод для выполнения действия с передачей аргументов.

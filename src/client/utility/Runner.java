@@ -1,7 +1,8 @@
 package client.utility;
 
-import server.managers.CommandManager;
+import client.managers.CommandManager;
 import client.utility.console.Console;
+import common.utility.ExecutionResponse;
 
 import java.io.File;
 import java.io.FileNotFoundException;

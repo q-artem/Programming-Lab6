@@ -1,9 +1,9 @@
 package client;
 
 import client.commands.*;
-import server.managers.CollectionManager;
-import server.managers.CommandManager;
-import server.managers.DumpManager;
+import client.managers.CollectionManager;
+import client.managers.CommandManager;
+import client.managers.DumpManager;
 import client.utility.Runner;
 import client.utility.console.Console;
 import client.utility.console.StandartConsole;

@@ -1,10 +1,10 @@
 package client.commands;
 
 import common.Command;
-import server.managers.CommandManager;
+import client.managers.CommandManager;
 import common.utility.Describable;
 import common.utility.Executable;
-import client.utility.ExecutionResponse;
+import common.utility.ExecutionResponse;
 import client.utility.console.Console;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package client.utility;
+package common.utility;
 
 /**
  * Класс-результат выполнения команды.
