@@ -1,23 +1,25 @@
 package client.managers;
 
+import client.server.Client;
 import client.utility.console.Console;
 import common.Car;
 import common.Coordinates;
 import common.HumanBeing;
 import common.WeaponType;
+import common.serverUtils.Request;
+import common.serverUtils.Response;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
-import java.io.*;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Scanner;
 import java.util.TreeMap;
 
 /**
@@ -27,27 +29,31 @@ import java.util.TreeMap;
 public class DumpManager {
     private final String fileName;
     private final Console console;
+    private final Client client;
 
     /**
      * Конструктор менеджера дампа.
      *
-     * @param fileName имя файла для сохранения и загрузки коллекции
-     * @param console  консоль для вывода сообщений об ошибках и информации
+     * @param fileName     имя файла для сохранения и загрузки коллекции
+     * @param console      консоль для вывода сообщений об ошибках и информации
+     * @param client менеджер для отправки запросов на сервер
      */
-    public DumpManager(String fileName, Console console) {
+    public DumpManager(String fileName, Console console, Client client) {
         this.fileName = fileName;
         this.console = console;
+        this.client = client;
     }
 
     /**
-     * Записывает коллекцию {@link HumanBeing} в XML-файл.
-     * Формирует XML-документ, сериализует все элементы коллекции и сохраняет в файл.
+     * Записывает коллекцию {@link HumanBeing} в XML-строку и отправляет на сервер.
+     * Формирует XML-документ, сериализует все элементы коллекции и отправляет на сервер.
      * В случае ошибки выводит сообщение в консоль.
      *
      * @param collection коллекция для сохранения
      */
     public void writeCollection(TreeMap<Integer, HumanBeing> collection) {
         try {
+            // Сериализация коллекции в XML-строку
             Document document = DocumentHelper.createDocument();
             Element rootElement = document.addElement("humanBeings");
 
@@ -75,39 +81,54 @@ public class DumpManager {
 
             OutputFormat format = OutputFormat.createPrettyPrint();
             format.setEncoding("UTF-8");
+            StringWriter stringWriter = new StringWriter();
+            XMLWriter xmlWriter = new XMLWriter(stringWriter, format);
+            xmlWriter.write(document);
+            xmlWriter.close();
+            String xmlData = stringWriter.toString();
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-                XMLWriter xmlWriter = new XMLWriter(writer, format);
-                xmlWriter.write(document);
+            // Отправка дампа на сервер
+            Request request = new Request("save_dump", xmlData);
+            client.sendRequest(request);
+            // Получение и вывод ответа сервера
+            Response response = client.recieveRequest();
+            if (response != null) {
+                console.println(response.getMessage());
+            } else {
+                console.printError("Нет ответа от сервера при сохранении коллекции.");
             }
-        } catch (IOException e) {
-            console.printError("Ошибка записи в файл: " + e.getMessage());
+        } catch (Exception e) {
+            console.printError("Ошибка при формировании дампа: " + e.getMessage());
         }
     }
 
     /**
-     * Загружает коллекцию {@link HumanBeing} из XML-файла.
+     * Загружает коллекцию {@link HumanBeing} из XML-дампа, полученного с сервера.
      * Очищает переданную коллекцию, парсит XML и добавляет элементы в коллекцию.
-     * В случае ошибок парсинга или чтения файла выводит сообщения в консоль.
+     * В случае ошибок парсинга или получения дампа выводит сообщения в консоль.
      *
      * @param collection коллекция для загрузки данных
      */
     public void readCollection(TreeMap<Integer, HumanBeing> collection) {
         collection.clear();
-
-        try (Scanner fileScanner = new Scanner(new File(fileName))) {
-            StringBuilder xmlContent = new StringBuilder();
-            while (fileScanner.hasNextLine()) {
-                xmlContent.append(fileScanner.nextLine());
+        try {
+            // Отправляем запрос на сервер для получения XML-дампа коллекции
+            Request request = new Request("get_dump", "");
+            client.sendRequest(request);
+            Response response = client.recieveRequest();
+            if (response == null) {
+                console.printError("Нет ответа от сервера при получении коллекции!");
+                return;
             }
+            String xmlContent = response.getMessage();
 
-            if (xmlContent.isEmpty()) {
-                console.printError("Файл пуст!");
+            if (xmlContent == null || xmlContent.isEmpty()) {
+                console.printError("Коллекция пуста или не получена с сервера!");
                 return;
             }
 
             SAXReader reader = new SAXReader();
-            Document document = reader.read(new StringReader(xmlContent.toString()));
+            Document document = reader.read(new StringReader(xmlContent));
             Element root = document.getRootElement();
 
             for (Element humanElement : root.elements("humanBeing")) {
@@ -150,13 +171,9 @@ public class DumpManager {
                 }
             }
 
-            console.println("Коллекция успешно загружена!");
-        } catch (FileNotFoundException e) {
-            console.printError("Файл не найден: " + e.getMessage());
-        } catch (DocumentException e) {
-            console.printError("Ошибка парсинга: " + e.getMessage());
+            console.println("Коллекция успешно загружена с сервера!");
         } catch (Exception e) {
-            console.printError("Непредвиденная ошибка: " + e.getMessage());
+            console.printError("Ошибка при получении или парсинге коллекции: " + e.getMessage());
         }
     }
 }

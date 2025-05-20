@@ -38,48 +38,24 @@ public class DumpManager {
     }
 
     /**
-     * Записывает коллекцию {@link HumanBeing} в XML-файл.
-     * Формирует XML-документ, сериализует все элементы коллекции и сохраняет в файл.
+     * Сохраняет коллекцию {@link HumanBeing} в XML-файл, принимая XML-дамп в виде строки.
+     * Получает XML-дамп коллекции в виде строки, парсит его и сохраняет в файл.
      * В случае ошибки выводит сообщение в консоль.
      *
-     * @param collection коллекция для сохранения
+     * @param xmlData XML-дамп коллекции для сохранения
      */
-    public void writeCollection(TreeMap<Integer, HumanBeing> collection) {
+    public void writeCollection(String xmlData) {
         try {
-            Document document = DocumentHelper.createDocument();
-            Element rootElement = document.addElement("humanBeings");
-
-            for (Map.Entry<Integer, HumanBeing> entry : collection.entrySet()) {
-                HumanBeing humanBeing = entry.getValue();
-                Element humanElement = rootElement.addElement("humanBeing").addAttribute("id", String.valueOf(entry.getKey()));
-
-                humanElement.addElement("name").setText(humanBeing.getName());
-
-                Element coordinates = humanElement.addElement("coordinates");
-                coordinates.addElement("x").setText(String.valueOf(humanBeing.getCoordinates().getX()));
-                coordinates.addElement("y").setText(humanBeing.getCoordinates().getY() != null ? String.valueOf(humanBeing.getCoordinates().getY()) : "");
-
-                humanElement.addElement("creationDate").setText(humanBeing.getCreationDate().toString());
-                humanElement.addElement("realHero").setText(humanBeing.getRealHero() != null ? String.valueOf(humanBeing.getRealHero()) : "");
-                humanElement.addElement("hasToothpick").setText(humanBeing.getHasToothpick() != null ? String.valueOf(humanBeing.getHasToothpick()) : "");
-                humanElement.addElement("impactSpeed").setText(String.valueOf(humanBeing.getImpactSpeed()));
-                humanElement.addElement("soundtrackName").setText(String.valueOf(humanBeing.getSoundtrackName()));
-                humanElement.addElement("minutesOfWaiting").setText(humanBeing.getMinutesOfWaiting() != null ? String.valueOf(humanBeing.getMinutesOfWaiting()) : "");
-                humanElement.addElement("weaponType").setText(String.valueOf(humanBeing.getWeaponType()));
-
-                Element carElement = humanElement.addElement("car");
-                carElement.addElement("name").setText(humanBeing.getCar() != null ? String.valueOf(humanBeing.getCar()) : "");
-            }
-
-            OutputFormat format = OutputFormat.createPrettyPrint();
+            org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
+            org.dom4j.Document document = reader.read(new java.io.StringReader(xmlData));
+            org.dom4j.io.OutputFormat format = org.dom4j.io.OutputFormat.createPrettyPrint();
             format.setEncoding("UTF-8");
-
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-                XMLWriter xmlWriter = new XMLWriter(writer, format);
+                org.dom4j.io.XMLWriter xmlWriter = new org.dom4j.io.XMLWriter(writer, format);
                 xmlWriter.write(document);
             }
-        } catch (IOException e) {
-            console.printError("Ошибка записи в файл: " + e.getMessage());
+        } catch (Exception e) {
+            console.printError("Ошибка при сохранении коллекции: " + e.getMessage());
         }
     }
 
@@ -155,6 +131,25 @@ public class DumpManager {
             console.printError("Ошибка парсинга: " + e.getMessage());
         } catch (Exception e) {
             console.printError("Непредвиденная ошибка: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Возвращает XML-дамп коллекции, считанной из файла (или текущей коллекции).
+     * Используется для передачи коллекции клиенту по сети.
+     * @return XML-дамп коллекции или пустую строку в случае ошибки
+     */
+    public String getXmlDump() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            StringBuilder xmlContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                xmlContent.append(line).append("\n");
+            }
+            return xmlContent.toString();
+        } catch (Exception e) {
+            console.printError("Ошибка при чтении XML-дампа: " + e.getMessage());
+            return "";
         }
     }
 }
