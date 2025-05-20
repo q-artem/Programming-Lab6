@@ -7,7 +7,7 @@ import client.models.creators.HumanBeingCreator;
 import common.utility.Describable;
 import common.utility.Executable;
 import common.utility.ExecutionResponse;
-import client.utility.console.Console;
+import common.utility.Console;
 
 /**
  * Команда 'insert'. Добавляет новый элемент в коллекцию по указанному ключу.

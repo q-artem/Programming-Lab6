@@ -6,7 +6,7 @@ import common.HumanBeing;
 import common.utility.Describable;
 import common.utility.Executable;
 import common.utility.ExecutionResponse;
-import client.utility.console.Console;
+import common.utility.Console;
 
 /**
  * Команда 'sum_of_impact_speed'. Выводит сумму значений поля impactSpeed для всех элементов коллекции.

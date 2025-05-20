@@ -1,4 +1,4 @@
-package client.utility.console;
+package common.utility;
 
 import java.util.Scanner;
 

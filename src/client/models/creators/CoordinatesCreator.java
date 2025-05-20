@@ -1,7 +1,7 @@
 package client.models.creators;
 
 import common.Coordinates;
-import client.utility.console.Console;
+import common.utility.Console;
 
 /**
  * Класс-утилита для создания объектов {@link Coordinates} с помощью пользовательского ввода.

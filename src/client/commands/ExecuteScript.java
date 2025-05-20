@@ -4,7 +4,7 @@ import common.Command;
 import common.utility.Describable;
 import common.utility.Executable;
 import common.utility.ExecutionResponse;
-import client.utility.console.Console;
+import common.utility.Console;
 
 /**
  * Команда 'execute_script'. Выполняет скрипт из указанного файла.

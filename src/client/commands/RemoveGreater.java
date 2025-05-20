@@ -6,7 +6,7 @@ import common.HumanBeing;
 import common.utility.Describable;
 import common.utility.Executable;
 import common.utility.ExecutionResponse;
-import client.utility.console.Console;
+import common.utility.Console;
 
 /**
  * Команда 'remove_greater'. Удаляет из коллекции все элементы, превышающие заданный по id элемент.

@@ -1,7 +1,7 @@
 package client.models.creators;
 
 import common.Car;
-import client.utility.console.Console;
+import common.utility.Console;
 
 /**
  * Класс-утилита для создания объектов {@link Car} с помощью пользовательского ввода.

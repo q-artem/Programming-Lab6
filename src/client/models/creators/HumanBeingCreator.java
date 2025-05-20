@@ -2,7 +2,7 @@ package client.models.creators;
 
 import common.HumanBeing;
 import common.WeaponType;
-import client.utility.console.Console;
+import common.utility.Console;
 
 import java.time.LocalDate;
 import java.util.Map;

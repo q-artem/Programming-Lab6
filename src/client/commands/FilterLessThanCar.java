@@ -7,7 +7,7 @@ import common.HumanBeing;
 import common.utility.Describable;
 import common.utility.Executable;
 import common.utility.ExecutionResponse;
-import client.utility.console.Console;
+import common.utility.Console;
 
 /**
  * Команда 'filter_less_than_car'. Выводит элементы коллекции, значение поля car которых меньше заданного.

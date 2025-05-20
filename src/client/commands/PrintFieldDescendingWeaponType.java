@@ -7,7 +7,7 @@ import common.WeaponType;
 import common.utility.Describable;
 import common.utility.Executable;
 import common.utility.ExecutionResponse;
-import client.utility.console.Console;
+import common.utility.Console;
 
 import java.util.ArrayList;
 import java.util.Comparator;
