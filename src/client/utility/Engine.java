@@ -11,16 +11,11 @@ import common.utility.StandartConsole;
 import java.io.IOException;
 
 public class Engine {
-    public void run(String[] args) throws IOException {
+    public void run() throws IOException {
         Console console = new StandartConsole();
 
-        if (args.length == 0) {
-            console.println("Введите имя загружаемого файла как аргумент командной строки");
-            System.exit(1);
-        }
-
         var localClient = new Client();
-        var dumpManager = new DumpManager(args[0], console, localClient);
+        var dumpManager = new DumpManager(console, localClient);
         var collectionManager = new CollectionManager(dumpManager);
         if (!collectionManager.loadCollection()) {
             System.exit(1);

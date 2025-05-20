@@ -1,22 +1,12 @@
 package server.managers;
 
-import common.Car;
-import common.Coordinates;
 import common.HumanBeing;
-import common.WeaponType;
-import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
-import client.utility.console.Console;
 
 import java.io.*;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
+import server.utils.ServerLogger;
 
 /**
  * Класс-менеджер для чтения и записи коллекции {@link HumanBeing} в XML-файл.
@@ -24,17 +14,15 @@ import org.dom4j.io.XMLWriter;
  */
 public class DumpManager {
     private final String fileName;
-    private final Console console;
+    private static final Logger logger = ServerLogger.getInstance();
 
     /**
      * Конструктор менеджера дампа.
      *
      * @param fileName имя файла для сохранения и загрузки коллекции
-     * @param console  консоль для вывода сообщений об ошибках и информации
      */
-    public DumpManager(String fileName, Console console) {
+    public DumpManager(String fileName) {
         this.fileName = fileName;
-        this.console = console;
     }
 
     /**
@@ -55,91 +43,17 @@ public class DumpManager {
                 xmlWriter.write(document);
             }
         } catch (Exception e) {
-            console.printError("Ошибка при сохранении коллекции: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Загружает коллекцию {@link HumanBeing} из XML-файла.
-     * Очищает переданную коллекцию, парсит XML и добавляет элементы в коллекцию.
-     * В случае ошибок парсинга или чтения файла выводит сообщения в консоль.
-     *
-     * @param collection коллекция для загрузки данных
-     */
-    public void readCollection(TreeMap<Integer, HumanBeing> collection) {
-        collection.clear();
-
-        try (Scanner fileScanner = new Scanner(new File(fileName))) {
-            StringBuilder xmlContent = new StringBuilder();
-            while (fileScanner.hasNextLine()) {
-                xmlContent.append(fileScanner.nextLine());
-            }
-
-            if (xmlContent.isEmpty()) {
-                console.printError("Файл пуст!");
-                return;
-            }
-
-            SAXReader reader = new SAXReader();
-            Document document = reader.read(new StringReader(xmlContent.toString()));
-            Element root = document.getRootElement();
-
-            for (Element humanElement : root.elements("humanBeing")) {
-                try {
-                    int id = Integer.parseInt(humanElement.attributeValue("id"));
-
-                    String name = humanElement.elementText("name");
-                    LocalDate creationDate = LocalDate.parse(humanElement.elementText("creationDate"));
-
-                    Element coordElement = humanElement.element("coordinates");
-                    long x = Long.parseLong(coordElement.elementText("x"));
-                    Float y = !Objects.equals(coordElement.elementText("y"), "") ? Float.parseFloat(coordElement.elementText("y")) : null;
-                    Coordinates coordinates = new Coordinates.Builder().x(x).y(y).build();
-
-                    Boolean realHero = !Objects.equals(humanElement.elementText("realHero"), "") ? Boolean.parseBoolean(humanElement.elementText("realHero")) : null;
-                    Boolean hasToothpick = !Objects.equals(humanElement.elementText("hasToothpick"), "") ? Boolean.parseBoolean(humanElement.elementText("hasToothpick")) : null;
-                    float impactSpeed = Float.parseFloat(humanElement.elementText("impactSpeed"));
-                    String soundtrackName = humanElement.elementText("soundtrackName");
-                    Double minutesOfWaiting = !Objects.equals(humanElement.elementText("minutesOfWaiting"), "") ? Double.parseDouble(humanElement.elementText("minutesOfWaiting")) : null;
-                    WeaponType weaponType = WeaponType.valueOf(humanElement.elementText("weaponType"));
-
-                    Element carElement = humanElement.element("car");
-                    String nameCar = carElement.elementText("name");
-                    Car car = new Car.Builder().name(nameCar).build();
-
-                    HumanBeing human = new HumanBeing.Builder(id, creationDate).name(name)
-                            .coordinates(coordinates)
-                            .realHero(realHero)
-                            .hasToothpick(hasToothpick)
-                            .impactSpeed(impactSpeed)
-                            .soundtrackName(soundtrackName)
-                            .minutesOfWaiting(minutesOfWaiting)
-                            .weaponType(weaponType)
-                            .car(car)
-                            .build();
-
-                    collection.put(id, human);
-                } catch (Exception e) {
-                    console.printError("Ошибка парсинга элемента humanBeing: " + e.getMessage());
-                }
-            }
-
-            console.println("Коллекция успешно загружена!");
-        } catch (FileNotFoundException e) {
-            console.printError("Файл не найден: " + e.getMessage());
-        } catch (DocumentException e) {
-            console.printError("Ошибка парсинга: " + e.getMessage());
-        } catch (Exception e) {
-            console.printError("Непредвиденная ошибка: " + e.getMessage());
+            logger.log(Level.WARNING, "Ошибка при сохранении коллекции: " + e.getMessage());
         }
     }
 
     /**
      * Возвращает XML-дамп коллекции, считанной из файла (или текущей коллекции).
      * Используется для передачи коллекции клиенту по сети.
+     *
      * @return XML-дамп коллекции или пустую строку в случае ошибки
      */
-    public String getXmlDump() {
+    public String readCollection() {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             StringBuilder xmlContent = new StringBuilder();
             String line;
@@ -148,7 +62,7 @@ public class DumpManager {
             }
             return xmlContent.toString();
         } catch (Exception e) {
-            console.printError("Ошибка при чтении XML-дампа: " + e.getMessage());
+            logger.log(Level.WARNING, "Ошибка при чтении XML-дампа: " + e.getMessage());
             return "";
         }
     }

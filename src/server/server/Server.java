@@ -27,7 +27,7 @@ public class Server {
     private DatagramChannel channel;
     private final ExecutorService responseCashedPoll = Executors.newCachedThreadPool();
     private final ExecutorService readCashedPoll = Executors.newCachedThreadPool();
-    private Lock serverLock = new ReentrantLock();
+    private final Lock serverLock = new ReentrantLock();
 
     public Server(int port) {
         this.port = port;
@@ -67,7 +67,7 @@ public class Server {
             if (object instanceof Request) {
                 request = (Request) object;
             } else {
-                return new Request("".split(" "));
+                return new Request("", "");
             }
             byteBuffer.clear();
             request.setClientAddress(inetSocketAddress);

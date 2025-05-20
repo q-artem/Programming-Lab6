@@ -27,19 +27,16 @@ import java.util.TreeMap;
  * Позволяет сериализовать коллекцию в XML и десериализовать её обратно, используя Dom4j.
  */
 public class DumpManager {
-    private final String fileName;
     private final Console console;
     private final Client client;
 
     /**
      * Конструктор менеджера дампа.
      *
-     * @param fileName     имя файла для сохранения и загрузки коллекции
      * @param console      консоль для вывода сообщений об ошибках и информации
      * @param client менеджер для отправки запросов на сервер
      */
-    public DumpManager(String fileName, Console console, Client client) {
-        this.fileName = fileName;
+    public DumpManager(Console console, Client client) {
         this.console = console;
         this.client = client;
     }
