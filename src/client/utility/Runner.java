@@ -1,7 +1,7 @@
 package client.utility;
 
 import client.managers.CommandManager;
-import client.utility.console.Console;
+import common.utility.Console;
 import common.utility.ExecutionResponse;
 
 import java.io.File;

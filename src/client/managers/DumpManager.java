@@ -1,7 +1,7 @@
 package client.managers;
 
 import client.server.Client;
-import client.utility.console.Console;
+import common.utility.Console;
 import common.Car;
 import common.Coordinates;
 import common.HumanBeing;
