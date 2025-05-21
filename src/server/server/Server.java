@@ -43,9 +43,6 @@ public class Server {
             System.exit(1);
         }
         logger.log(Level.INFO, "Открыт порт " + this.port);
-//        while (true){
-//            this.receiveRequest();
-//        }
     }
 
     public Request receiveRequest() {

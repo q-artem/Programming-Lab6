@@ -122,16 +122,11 @@ public class Engine {
                 this.server.sendResponse(threadResponse);
             } else if (command.equals("get_dump")) {
                 // Загружаем коллекцию с сервера и отправляем клиенту
-                String xmlData = dumpManager.readCollection(); // Реализуйте этот метод для получения XML-дампа
+                String xmlData = dumpManager.readCollection();
                 Response threadResponse = new Response(xmlData);
                 threadResponse.setClientAddress(clientAddress);
                 this.server.sendResponse(threadResponse);
             }
-//            else {
-//                Response threadResponse = commandManager.setUserRequest(localRequest);
-//                threadResponse.setClientAddress(clientAddress);
-//                this.server.sendResponse(threadResponse);
-//            }
         };
         var requestThread = new Thread(requestTask);
         requestThread.start();
